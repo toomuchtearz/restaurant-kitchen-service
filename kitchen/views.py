@@ -79,3 +79,37 @@ class IngredientUpdateView(generic.UpdateView):
 class IngredientDeleteView(generic.DeleteView):
     model = Ingredient
     success_url = reverse_lazy("kitchen:ingredient-list")
+
+
+class DishTypeListView(generic.ListView):
+    model = DishType
+    context_object_name = "dish_type_list"
+    template_name = "kitchen/dish_type_list.html"
+    paginate_by = 21
+
+
+class DishTypeCreateView(generic.CreateView):
+    model = DishType
+    fields = "__all__"
+    template_name = "kitchen/dish_type_form.html"
+    success_url = reverse_lazy("kitchen:dish-type-list")
+
+
+class DishTypeUpdateView(generic.UpdateView):
+    model = DishType
+    fields = "__all__"
+    template_name = "kitchen/dish_type_form.html"
+    success_url = reverse_lazy("kitchen:dish-type-list")
+
+
+class DishTypeDeleteView(generic.DeleteView):
+    model = DishType
+    template_name = "kitchen/dish_type_confirm_delete.html"
+    success_url = reverse_lazy("kitchen:dish-type-list")
+    context_object_name = "dish_type"
+
+
+class DishTypeDetailView(generic.DetailView):
+    model = DishType
+    context_object_name = "dish_type"
+    template_name = "kitchen/dish_type detail.html"
