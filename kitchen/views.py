@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy, reverse
+from django.views import generic
 
 from kitchen.models import Dish, Ingredient, DishType
 
@@ -24,3 +26,32 @@ def index(request: HttpRequest) -> HttpResponse:
             "num_visits": num_visits
         }
     )
+
+
+class DishListView(generic.ListView):
+    model = Dish
+    paginate_by = 5
+
+
+class DishDetailView(generic.DetailView):
+    model = Dish
+
+
+class DishCreateView(generic.CreateView):
+    model = Dish
+    fields = "__all__"
+    success_url = reverse_lazy("kitchen:dish-list")
+
+
+class DishUpdateView(generic.UpdateView):
+    model = Dish
+    fields = "__all__"
+    success_url = reverse_lazy("kitchen:dish-list")
+
+    def get_success_url(self):
+        return reverse("kitchen:dish-detail", kwargs={"pk": self.object.pk})
+
+
+class DishDeleteView(generic.DeleteView):
+    model = Dish
+    success_url = reverse_lazy("kitchen:dish-list")
