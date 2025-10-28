@@ -30,7 +30,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
 class DishListView(generic.ListView):
     model = Dish
-    paginate_by = 5
+    paginate_by = 10
 
 
 class DishDetailView(generic.DetailView):
@@ -46,12 +46,36 @@ class DishCreateView(generic.CreateView):
 class DishUpdateView(generic.UpdateView):
     model = Dish
     fields = "__all__"
-    success_url = reverse_lazy("kitchen:dish-list")
 
     def get_success_url(self):
-        return reverse("kitchen:dish-detail", kwargs={"pk": self.object.pk})
+        return reverse(
+            "kitchen:dish-detail",
+            kwargs={"pk": self.object.pk}
+        )
 
 
 class DishDeleteView(generic.DeleteView):
     model = Dish
     success_url = reverse_lazy("kitchen:dish-list")
+
+
+class IngredientListView(generic.ListView):
+    model = Ingredient
+    paginate_by = 10
+
+
+class IngredientCreateView(generic.CreateView):
+    model = Ingredient
+    fields = "__all__"
+    success_url = reverse_lazy("kitchen:ingredient-list")
+
+
+class IngredientUpdateView(generic.UpdateView):
+    model = Ingredient
+    fields = "__all__"
+    success_url = reverse_lazy("kitchen:ingredient-list")
+
+
+class IngredientDeleteView(generic.DeleteView):
+    model = Ingredient
+    success_url = reverse_lazy("kitchen:ingredient-list")
