@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
-from django.http import HttpRequest, HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
 from kitchen.models import Dish, Ingredient, DishType
 
-
+@login_required
 def index(request: HttpRequest) -> HttpResponse:
     num_dishes = Dish.objects.count()
     num_ingredients = Ingredient.objects.count()
@@ -28,9 +29,26 @@ def index(request: HttpRequest) -> HttpResponse:
     )
 
 
+def dish_toggle_button(request: HttpRequest, pk: int) -> HttpResponse:
+    dish = Dish.objects.get(pk=pk)
+    user = request.user
+
+    if dish in user.dishes.all():
+        user.dishes.remove(dish)
+    else:
+        user.dishes.add(dish)
+
+    return HttpResponseRedirect(
+        reverse(
+            "kitchen:dish-detail",
+            kwargs={"pk": dish.pk}
+        )
+    )
+
+
 class DishListView(generic.ListView):
     model = Dish
-    paginate_by = 10
+    paginate_by = 15
 
 
 class DishDetailView(generic.DetailView):
