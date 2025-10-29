@@ -24,3 +24,54 @@ class CookUpdateForm(forms.ModelForm):
             "email",
             "years_of_experience"
         )
+
+
+class CookSearchForm(forms.Form):
+    username = forms.CharField(
+        required=False,
+        max_length=255,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by username or name"
+            }
+        )
+    )
+
+
+class DishSearchForm(forms.Form):
+    name = forms.CharField(
+        required=False,
+        max_length=255,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by dish name"
+            }
+        )
+    )
+
+class IngredientSearchForm(forms.Form):
+    name = forms.CharField(
+        required=False,
+        max_length=255,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by ingredient name"
+            }
+        )
+    )
+
+
+class DishTypeSearchForm(forms.Form):
+    name = forms.CharField(
+        required=False,
+        max_length=255,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by DishType name"
+            }
+        )
+    )
