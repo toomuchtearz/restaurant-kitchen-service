@@ -1,6 +1,5 @@
 from django.urls import path
 
-from kitchen.models import DishType
 from kitchen.views import (
     index,
     dish_toggle_button,
@@ -19,8 +18,13 @@ from kitchen.views import (
     DishTypeDetailView,
     DishTypeCreateView,
     DishTypeUpdateView,
-    DishTypeDeleteView
+    DishTypeDeleteView,
 
+    CookListView,
+    CookDetailView,
+    CookCreateView,
+    CookUpdateView,
+    CookDeleteView
 )
 
 urlpatterns = [
@@ -42,6 +46,12 @@ urlpatterns = [
     path("dish_types/<int:pk>/", DishTypeDetailView.as_view(), name="dish-type-detail"),
     path("dish_types/<int:pk>/update/", DishTypeUpdateView.as_view(), name="dish-type-update"),
     path("dish_types/<int:pk>/delete/", DishTypeDeleteView.as_view(), name="dish-type-delete"),
+
+    path("cooks/", CookListView.as_view(), name="cook-list"),
+    path("cooks/<int:pk>/", CookDetailView.as_view(), name="cook-detail"),
+    path("cooks/create/", CookCreateView.as_view(), name="cook-create"),
+    path("cooks/<int:pk>/update/", CookUpdateView.as_view(), name="cook-update"),
+    path("cooks/<int:pk>/delete/", CookDeleteView.as_view(), name="cook-delete"),
 ]
 
 
