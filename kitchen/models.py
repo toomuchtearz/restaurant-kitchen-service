@@ -45,3 +45,25 @@ class Dish(models.Model):
     class Meta:
         verbose_name = "dish"
         verbose_name_plural = "dishes"
+
+
+class Suggestion(models.Model):
+    cook = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="suggestions"
+    )
+    dish = models.ForeignKey(
+        Dish,
+        on_delete=models.CASCADE,
+        related_name="suggestions"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    text = models.TextField()
+    approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Suggestion by {self.cook.username} on {self.dish.name}"
+
+    class Meta:
+        ordering = ["-created_at"]
