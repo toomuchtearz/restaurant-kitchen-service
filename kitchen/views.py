@@ -131,6 +131,9 @@ class DishDeleteView(
     model = Dish
     success_url = reverse_lazy("kitchen:dish-list")
 
+    def test_func(self):
+        return self.request.user.is_staff
+
 
 class IngredientListView(LoginRequiredMixin, generic.ListView):
     model = Ingredient
