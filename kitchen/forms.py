@@ -9,6 +9,7 @@ class CookCreationForm(UserCreationForm):
         fields = UserCreationForm.Meta.fields + (
             "first_name",
             "last_name",
+            "is_staff",
             "email",
             "years_of_experience",
         )
@@ -21,6 +22,7 @@ class CookUpdateForm(forms.ModelForm):
             "username",
             "first_name",
             "last_name",
+            "is_staff",
             "email",
             "years_of_experience"
         )
