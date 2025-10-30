@@ -28,6 +28,12 @@ class CookUpdateForm(forms.ModelForm):
         )
 
 
+class CookPasswordResetForm(UserCreationForm):
+    class Meta:
+        model = get_user_model()
+        fields = ()
+
+
 class CookSearchForm(forms.Form):
     username = forms.CharField(
         required=False,
@@ -52,6 +58,7 @@ class DishSearchForm(forms.Form):
             }
         )
     )
+
 
 class IngredientSearchForm(forms.Form):
     name = forms.CharField(

@@ -12,9 +12,11 @@ from kitchen.forms import (
     CookUpdateForm,
     DishSearchForm,
     CookSearchForm,
-    DishTypeSearchForm
+    DishTypeSearchForm,
+    CookPasswordResetForm
 )
 from kitchen.models import Dish, Ingredient, DishType
+
 
 @login_required
 def index(request: HttpRequest) -> HttpResponse:
@@ -28,7 +30,7 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(
         request=request,
         template_name="kitchen/index.html",
-        context = {
+        context={
             "num_dishes": num_dishes,
             "num_ingredients": num_ingredients,
             "num_dish_types": num_dish_types,
@@ -36,6 +38,7 @@ def index(request: HttpRequest) -> HttpResponse:
             "num_visits": num_visits
         }
     )
+
 
 @login_required
 def dish_toggle_button(request: HttpRequest, pk: int) -> HttpResponse:
@@ -70,9 +73,8 @@ class DishListView(LoginRequiredMixin, generic.ListView):
 
         return queryset
 
-
     def get_context_data(
-        self, *, object_list = ..., **kwargs
+        self, *, object_list=..., **kwargs
     ):
         context = super().get_context_data(**kwargs)
         name = self.request.GET.get("name", "")
@@ -185,6 +187,7 @@ class IngredientUpdateView(
     def test_func(self):
         return self.request.user.is_staff
 
+
 class IngredientDeleteView(
     LoginRequiredMixin,
     generic.DeleteView,
@@ -256,6 +259,7 @@ class DishTypeUpdateView(
     def test_func(self):
         return self.request.user.is_staff
 
+
 class DishTypeDeleteView(
     LoginRequiredMixin,
     UserPassesTestMixin,
@@ -297,7 +301,7 @@ class CookListView(LoginRequiredMixin, generic.ListView):
         return queryset
 
     def get_context_data(
-        self, *, object_list = ..., **kwargs
+        self, *, object_list=..., **kwargs
     ):
         context = super().get_context_data(**kwargs)
         username = self.request.GET.get("username", "")
@@ -334,6 +338,29 @@ class CookUpdateView(
 ):
     model = get_user_model()
     form_class = CookUpdateForm
+
+    def test_func(self):
+        self.object = self.get_object()
+        return (
+            self.request.user.is_staff
+            or self.request.user.pk == self.object.pk
+        )
+
+    def get_success_url(self):
+        return reverse(
+            "kitchen:cook-detail",
+            kwargs={"pk": self.object.pk}
+        )
+
+
+class CookPasswordResetView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
+    model = get_user_model()
+    form_class = CookPasswordResetForm
+    template_name = "kitchen/cook_password_reset_form.html"
 
     def test_func(self):
         self.object = self.get_object()
