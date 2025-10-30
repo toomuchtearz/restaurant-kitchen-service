@@ -1,13 +1,19 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q, Count
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from kitchen.forms import CookCreationForm, CookUpdateForm, DishSearchForm, CookSearchForm, DishTypeSearchForm
+from kitchen.forms import (
+    CookCreationForm,
+    CookUpdateForm,
+    DishSearchForm,
+    CookSearchForm,
+    DishTypeSearchForm
+)
 from kitchen.models import Dish, Ingredient, DishType
 
 @login_required
@@ -59,6 +65,7 @@ class DishListView(LoginRequiredMixin, generic.ListView):
         )
         name = self.request.GET.get("name")
         if name:
+            name = name.strip()
             queryset = queryset.filter(name__icontains=name)
 
         return queryset
@@ -71,7 +78,7 @@ class DishListView(LoginRequiredMixin, generic.ListView):
         name = self.request.GET.get("name", "")
         context["search_form"] = DishSearchForm(
             initial={
-                "name": name
+                "name": name.strip()
             }
         )
 
@@ -80,17 +87,32 @@ class DishListView(LoginRequiredMixin, generic.ListView):
 
 class DishDetailView(LoginRequiredMixin, generic.DetailView):
     model = Dish
+    queryset = Dish.objects.prefetch_related("ingredients", "cooks")
 
 
-class DishCreateView(LoginRequiredMixin, generic.CreateView):
+class DishCreateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.CreateView
+):
     model = Dish
     fields = "__all__"
     success_url = reverse_lazy("kitchen:dish-list")
 
+    def test_func(self):
+        return self.request.user.is_staff
 
-class DishUpdateView(LoginRequiredMixin, generic.UpdateView):
+
+class DishUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
     model = Dish
     fields = "__all__"
+
+    def test_func(self):
+        return self.request.user.is_staff
 
     def get_success_url(self):
         return reverse(
@@ -99,7 +121,11 @@ class DishUpdateView(LoginRequiredMixin, generic.UpdateView):
         )
 
 
-class DishDeleteView(LoginRequiredMixin, generic.DeleteView):
+class DishDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DeleteView
+):
     model = Dish
     success_url = reverse_lazy("kitchen:dish-list")
 
@@ -109,9 +135,12 @@ class IngredientListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        queryset = Ingredient.objects.all()
+        queryset = Ingredient.objects.annotate(
+            num_dishes=Count("dishes")
+        )
         name = self.request.GET.get("name")
         if name:
+            name = name.strip()
             queryset = queryset.filter(name__icontains=name)
 
         return queryset
@@ -123,26 +152,48 @@ class IngredientListView(LoginRequiredMixin, generic.ListView):
         name = self.request.GET.get("name", "")
         context["search_form"] = DishSearchForm(
             initial={
-                "name": name
+                "name": name.strip()
             }
         )
 
         return context
 
 
-class IngredientCreateView(LoginRequiredMixin, generic.CreateView):
+class IngredientCreateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.CreateView,
+):
+
+    def test_func(self):
+        return self.request.user.is_staff
+
     model = Ingredient
     fields = "__all__"
     success_url = reverse_lazy("kitchen:ingredient-list")
 
 
-class IngredientUpdateView(LoginRequiredMixin, generic.UpdateView):
+class IngredientUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
     model = Ingredient
     fields = "__all__"
     success_url = reverse_lazy("kitchen:ingredient-list")
 
+    def test_func(self):
+        return self.request.user.is_staff
 
-class IngredientDeleteView(LoginRequiredMixin, generic.DeleteView):
+class IngredientDeleteView(
+    LoginRequiredMixin,
+    generic.DeleteView,
+    UserPassesTestMixin
+):
+
+    def test_func(self):
+        return self.request.user.is_staff
+
     model = Ingredient
     success_url = reverse_lazy("kitchen:ingredient-list")
 
@@ -154,9 +205,12 @@ class DishTypeListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 21
 
     def get_queryset(self):
-        queryset = DishType.objects.all()
+        queryset = DishType.objects.annotate(
+            num_dishes=Count("dishes")
+        )
         name = self.request.GET.get("name")
         if name:
+            name = name.strip()
             queryset = queryset.filter(name__icontains=name)
 
         return queryset
@@ -168,32 +222,52 @@ class DishTypeListView(LoginRequiredMixin, generic.ListView):
         name = self.request.GET.get("name", "")
         context["search_form"] = DishTypeSearchForm(
             initial={
-                "name": name
+                "name": name.strip()
             }
         )
 
         return context
 
 
-class DishTypeCreateView(LoginRequiredMixin, generic.CreateView):
+class DishTypeCreateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.CreateView
+):
     model = DishType
     fields = "__all__"
     template_name = "kitchen/dish_type_form.html"
     success_url = reverse_lazy("kitchen:dish-type-list")
 
+    def test_func(self):
+        return self.request.user.is_staff
 
-class DishTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
+
+class DishTypeUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
     model = DishType
     fields = "__all__"
     template_name = "kitchen/dish_type_form.html"
     success_url = reverse_lazy("kitchen:dish-type-list")
 
+    def test_func(self):
+        return self.request.user.is_staff
 
-class DishTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
+class DishTypeDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DeleteView
+):
     model = DishType
     template_name = "kitchen/dish_type_confirm_delete.html"
     success_url = reverse_lazy("kitchen:dish-type-list")
     context_object_name = "dish_type"
+
+    def test_func(self):
+        return self.request.user.is_staff
 
 
 class DishTypeDetailView(LoginRequiredMixin, generic.DetailView):
@@ -207,7 +281,9 @@ class CookListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        queryset = get_user_model().objects.all()
+        queryset = get_user_model().objects.annotate(
+            num_dishes=Count("dishes")
+        )
 
         username = self.request.GET.get("username")
         if username:
@@ -238,15 +314,33 @@ class CookDetailView(LoginRequiredMixin, generic.DetailView):
     queryset = get_user_model().objects.prefetch_related("dishes__dish_type")
 
 
-class CookCreateView(LoginRequiredMixin, generic.CreateView):
+class CookCreateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.CreateView
+):
     model = get_user_model()
     form_class = CookCreationForm
     success_url = reverse_lazy("kitchen:cook-list")
 
+    def test_func(self):
+        return self.request.user.is_staff
 
-class CookUpdateView(LoginRequiredMixin, generic.UpdateView):
+
+class CookUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
     model = get_user_model()
     form_class = CookUpdateForm
+
+    def test_func(self):
+        self.object = self.get_object()
+        return (
+            self.request.user.is_staff
+            or self.request.user.pk == self.object.pk
+        )
 
     def get_success_url(self):
         return reverse(
@@ -255,6 +349,17 @@ class CookUpdateView(LoginRequiredMixin, generic.UpdateView):
         )
 
 
-class CookDeleteView(LoginRequiredMixin, generic.DeleteView):
+class CookDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DeleteView
+):
     model = get_user_model()
     success_url = reverse_lazy("kitchen:cook-list")
+
+    def test_func(self):
+        self.object = self.get_object()
+        return (
+            self.request.user.is_staff
+            or self.request.user.pk == self.object.pk
+        )
