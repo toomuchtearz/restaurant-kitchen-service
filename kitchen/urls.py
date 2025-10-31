@@ -3,6 +3,8 @@ from django.urls import path
 from kitchen.views import (
     index,
     dish_toggle_button,
+    suggestion_approve_view,
+
     DishListView,
     DishDetailView,
     DishCreateView,
@@ -24,7 +26,12 @@ from kitchen.views import (
     CookDetailView,
     CookCreateView,
     CookUpdateView,
-    CookDeleteView, CookPasswordResetView
+    CookDeleteView,
+    CookPasswordResetView,
+
+    SuggestionCreateView,
+    SuggestionListView,
+    SuggestionDetailView
 )
 
 urlpatterns = [
@@ -105,6 +112,11 @@ urlpatterns = [
         CookDeleteView.as_view(),
         name="cook-delete"
     ),
+    path("dishes/<int:dish_id>/suggest/", SuggestionCreateView.as_view(), name="suggestion-create"),
+    path("suggestions/", SuggestionListView.as_view(), name="suggestion-list"),
+    path("suggestions/<int:pk>/", SuggestionDetailView.as_view(), name="suggestion-detail"),
+    path("suggestions/<int:pk>/approve/", suggestion_approve_view, name="suggestion-approve"),
+
 ]
 
 
