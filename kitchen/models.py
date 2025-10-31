@@ -66,4 +66,4 @@ class Suggestion(models.Model):
         return f"Suggestion by {self.cook.username} on {self.dish.name}"
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["approved", "-created_at"]
