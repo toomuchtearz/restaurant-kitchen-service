@@ -11,11 +11,18 @@ from kitchen.forms import (
     CookCreationForm,
     CookUpdateForm,
     DishSearchForm,
-    CookSearchForm,
     DishTypeSearchForm,
-    CookPasswordResetForm
+    CookSearchForm,
+    CookPasswordResetForm,
+    SuggestionForm,
+    SuggestionSearchForm,
 )
-from kitchen.models import Dish, Ingredient, DishType
+from kitchen.models import (
+    Dish,
+    Ingredient,
+    DishType,
+    Suggestion
+)
 
 
 @login_required
@@ -393,3 +400,80 @@ class CookDeleteView(
             self.request.user.is_staff
             or self.request.user.pk == self.object.pk
         )
+
+
+class SuggestionCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Suggestion
+    form_class = SuggestionForm
+    template_name = "kitchen/suggestion_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["dish"] = Dish.objects.get(pk=self.kwargs["dish_id"])
+
+        return context
+
+    def form_valid(self, form):
+        form.instance.cook = self.request.user
+        form.instance.dish_id = self.kwargs["dish_id"]
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse(
+            "kitchen:dish-detail",
+            kwargs={"pk": self.kwargs["dish_id"]}
+        )
+
+
+class SuggestionListView(LoginRequiredMixin, generic.ListView):
+    model = Suggestion
+    paginate_by = 9
+
+    def get_queryset(self):
+        queryset = Suggestion.objects.select_related(
+            "dish", "cook"
+        )
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(
+                cook=self.request.user
+        )
+
+        dish_name = self.request.GET.get("dish_name")
+        if dish_name:
+            dish_name = dish_name.strip()
+            queryset = queryset.filter(
+                dish__name__icontains=dish_name
+            )
+
+        return queryset
+
+
+    def get_context_data(
+        self, *, object_list=..., **kwargs
+    ):
+        context = super().get_context_data(**kwargs)
+        dish_name = self.request.GET.get("dish_name", "")
+        context["search_form"] = SuggestionSearchForm(
+            initial={
+                "dish_name": dish_name.strip()
+            }
+        )
+        return context
+
+
+class SuggestionDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Suggestion
+
+
+def suggestion_approve_view(request: HttpRequest, pk: int) -> HttpResponse:
+    suggestion = Suggestion.objects.get(pk=pk)
+    suggestion.approved = True
+    suggestion.save()
+
+    return HttpResponseRedirect(
+        reverse(
+            "kitchen:suggestion-detail",
+            kwargs={"pk": suggestion.pk}
+        )
+    )
+
