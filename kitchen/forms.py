@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 
+from kitchen.models import Suggestion
+
 
 class CookCreationForm(UserCreationForm):
     class Meta:
@@ -31,6 +33,12 @@ class CookPasswordResetForm(UserCreationForm):
     class Meta:
         model = get_user_model()
         fields = ()
+
+
+class SuggestionForm(forms.ModelForm):
+    class Meta:
+        model = Suggestion
+        fields = ("text",)
 
 
 class CookSearchForm(forms.Form):
@@ -80,6 +88,19 @@ class DishTypeSearchForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "placeholder": "Search by DishType name"
+            }
+        )
+    )
+
+
+class SuggestionSearchForm(forms.Form):
+    dish_name = forms.CharField(
+        required=False,
+        max_length=255,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by dish name"
             }
         )
     )
