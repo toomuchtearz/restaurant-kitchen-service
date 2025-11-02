@@ -7,7 +7,7 @@ from kitchen.models import DishType, Ingredient, Dish, Suggestion
 class ModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.cook_data ={
+        cls.cook_data = {
             "username": "test_username",
             "password": "test_password",
             "years_of_experience": 1
@@ -22,7 +22,7 @@ class ModelTests(TestCase):
         cls.dish = Dish.objects.create(
             name="test_dish",
             description="some desc",
-            price = 1,
+            price=1,
             dish_type=cls.dish_type
         )
         cls.suggestion = Suggestion.objects.create(
@@ -44,7 +44,10 @@ class ModelTests(TestCase):
     def test_suggestion_str(self):
         self.assertEqual(
             str(self.suggestion),
-            f"Suggestion by {self.suggestion.cook.username} on {self.suggestion.dish.name}"
+            f""
+            f"Suggestion by "
+            f"{self.suggestion.cook.username} "
+            f"on {self.suggestion.dish.name}"
         )
 
     def test_create_author_with_years_of_experience(self):
