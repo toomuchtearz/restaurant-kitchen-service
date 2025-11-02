@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block title %}{% if object %}Edit Cook{% else %}Add Cook{% endif %}{% endblock %}
+
+{% block content %}
+<div class="cook-form-container">
+  <div class="card cook-form-card shadow-lg border-0 p-5">
+    <div class="text-center mb-4">
+      <h1 class="fw-bold text-primary">
+        {% if object %}Edit Cook{% else %}Add New Cook{% endif %}
+      </h1>
+      <p class="text-muted mb-0">
+        {% if object %}
+          Update cook details below to keep your team information accurate
+        {% else %}
+          Fill out the form below to add a new cook to your kitchen team
+        {% endif %}
+      </p>
+    </div>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form|crispy }}
+
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary px-5 py-2 rounded-pill shadow-sm">
+          💾 {% if object %}Save Changes{% else %}Add Cook{% endif %}
+        </button>
+				{% if object %}
+				<a href="{% url 'kitchen:cook-detail' object.pk %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill ms-2">
+          ← Back to account
+        </a>
+				{% else %}
+				<a href="{% url 'kitchen:cook-list' %}" class="btn btn-outline-secondary px-4 py-2 rounded-pill ms-2">
+          ← Back to cooks list
+					</a>
+				{% endif %}
+
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

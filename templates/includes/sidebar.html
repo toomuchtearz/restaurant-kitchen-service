@@ -1,0 +1,49 @@
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <h3 class="sidebar-title">🍴 Kitchen Service</h3>
+    </div>
+
+    <ul class="sidebar-nav">
+        <li><a href="{% url 'kitchen:index' %}">🏠 Home</a></li>
+        <li><a href="{% url 'kitchen:dish-list' %}">🍲 Dishes</a></li>
+        <li><a href="{% url 'kitchen:ingredient-list' %}">🌿 Ingredients</a></li>
+        <li><a href="{% url 'kitchen:cook-list' %}">👨‍🍳 Cooks</a></li>
+        <li><a href="{% url 'kitchen:dish-type-list' %}">🍴 Dish Types</a></li>
+
+			{% if request.user.is_staff %}
+				<li><a href="{% url 'kitchen:suggestion-list' %}">💡 All Suggestions</a></li>
+			{% else %}
+				<li><a href="{% url 'kitchen:suggestion-list' %}">💡 My Suggestions</a></li>
+			{% endif %}
+    </ul>
+
+	<div class="sidebar-footer mt-auto text-center">
+  <div class="footer-inner p-3 border-top border-light-subtle">
+    <div class="user-info d-flex align-items-center justify-content-center gap-2 mb-3">
+      <div class="avatar-circle bg-light text-primary fw-bold">
+        {{ user.username|slice:":1"|upper }}
+      </div>
+      <div class="text-start">
+        <p class="mb-0 small text-light opacity-75">Logged in as</p>
+        <strong class="text-white">{{ user.username }}</strong>
+      </div>
+    </div>
+
+    <div class="footer-buttons d-flex justify-content-center gap-2 flex-wrap">
+      <a href="{% url 'kitchen:cook-detail' user.id %}"
+         class="btn btn-sm btn-outline-light rounded-pill px-3 shadow-sm d-flex align-items-center gap-1">
+        <i class="bi bi-person-circle"></i> My Account
+      </a>
+
+      <form action="{% url 'logout' %}" method="post" class="m-0">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-danger rounded-pill px-3 shadow-sm">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+</nav>

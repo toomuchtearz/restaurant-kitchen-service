@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Suggestion Detail | Kitchen Service{% endblock %}
+
+{% block content %}
+<div class="suggestion-detail-container py-5">
+  <div class="card shadow-lg border-0 rounded-4 mx-auto" style="max-width: 750px;">
+    <div class="card-body p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary mb-0">💡 Suggestion Detail</h2>
+        {% if suggestion.approved %}
+          <span class="badge bg-success rounded-pill px-3 py-1">Approved</span>
+        {% else %}
+          <span class="badge bg-secondary rounded-pill px-3 py-1">Pending</span>
+					{% if user.is_staff %}
+              <a href="{% url 'kitchen:suggestion-approve' suggestion.pk %}"
+                 class="btn btn-outline-success rounded-pill shadow-sm px-4 py-1 ms-2">
+                ✅ Mark as Approved
+              </a>
+            {% endif %}
+        {% endif %}
+      </div>
+
+      <div class="mb-4">
+        <p class="text-muted small mb-1">
+          🕓 Submitted on: {{ suggestion.created_at|date:"M d, Y - H:i" }}
+        </p>
+
+        {% if user.is_staff %}
+          <p class="text-muted small mb-1">
+            👨‍🍳 Submitted by:
+            <strong class="text-dark">
+              {{ suggestion.cook.get_full_name|default:suggestion.cook.username }}
+            </strong>
+          </p>
+        {% endif %}
+
+        <p class="text-muted small mb-3">
+          🍽️ Related dish:
+          <a href="{% url 'kitchen:dish-detail' suggestion.dish.pk %}" class="text-decoration-none text-primary fw-semibold">
+            {{ suggestion.dish.name }}
+          </a>
+        </p>
+      </div>
+
+      <div class="suggestion-text p-4 bg-light rounded-4 mb-4">
+				<pre class="fs-5 text-dark suggestion-pre">{{ suggestion.text }}</pre>
+			</div>
+
+
+      <div class="d-flex justify-content-between align-items-center">
+        <a href="{% url 'kitchen:suggestion-list' %}"
+           class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+          ⬅ All Suggestions
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block title %}Dishes | Kitchen Service{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-bold mb-0">🍲 Dishes</h1>
+        <p class="text-muted mb-0">Explore all dishes currently served in the kitchen</p>
+    </div>
+	{% if request.user.is_staff %}
+		<a href="{% url 'kitchen:dish-create' %}" class="btn btn-primary shadow-sm rounded-pill px-4">
+			+ Add New Dish
+		</a>
+{% endif %}
+</div>
+
+<!-- Search Form -->
+<div class="card shadow-sm border-0 mb-4 rounded-4">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-10 col-12">
+                {{ search_form|crispy }}
+            </div>
+            <div class="col-md-2 col-12 d-flex justify-content-md-end justify-content-center">
+                <button type="submit" class="btn btn-outline-primary rounded-pill px-4 w-100">
+                    🔍 Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if dish_list %}
+<div class="dish-grid">
+    {% for dish in dish_list %}
+    <div class="card dish-card shadow-sm border-0">
+        <div class="card-body">
+            <h4 class="card-title">
+                <a href="{% url 'kitchen:dish-detail' dish.pk %}" class="dish-title-link">{{ dish.name|truncatewords:5 }}</a>
+            </h4>
+            <p class="card-text text-muted mb-2">{{ dish.dish_type.name }}</p>
+            <p class="text-secondary small mb-3">{{ dish.description|truncatewords:10 }}</p>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="price-tag">${{ dish.price }}</span>
+                <a href="{% url 'kitchen:dish-detail' dish.pk %}" class="btn btn-outline-primary btn-sm rounded-pill">View</a>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white border-0 small text-muted">
+					{% with cooks=dish.cooks.all %}
+						👨‍🍳 Cooks:
+						{% if cooks|length > 2 %}
+							{{ cooks.0.username }}, {{ cooks.1.username }} and {{ cooks|length|add:"-2" }} more
+						{% else %}
+							{{ cooks|join:", " }}
+						{% endif %}
+					{% endwith %}
+					<br>
+					{% with ingredients=dish.ingredients.all %}
+						🌿 Ingredients:
+						{% if ingredients|length > 2 %}
+							{{ ingredients.0.name }}, {{ ingredients.1.name }} and {{ ingredients|length|add:"-2" }} more
+						{% else %}
+							{{ ingredients|join:", " }}
+						{% endif %}
+					{% endwith %}
+				</div>
+		</div>
+		{% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info text-center shadow-sm rounded-4">
+    <p class="mb-0">No dishes available yet. <a href="{% url 'kitchen:dish-create' %}">Add a new dish</a> to get started!</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ cook.username }} | Cook Details{% endblock %}
+
+{% block content %}
+<div class="cook-detail-container">
+  <div class="card cook-detail-card shadow-lg border-0 p-5">
+
+    <!-- Header: Cook name and buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="fw-bold text-primary mb-0">{{ cook.first_name }} {{ cook.last_name }}</h1>
+        <p class="text-muted mb-0">@{{ cook.username }}</p>
+      </div>
+
+      <div class="d-flex gap-2">
+        {% if request.user.is_staff or object.pk == request.user.pk %}
+					<a href="{% url 'kitchen:cook-update' cook.pk %}" class="btn btn-outline-primary rounded-pill px-4 shadow-sm">
+          ✏️ Edit Profile
+        </a>
+					<a href="{% url 'kitchen:cook-password-reset' cook.pk %}" class="btn btn-outline-primary rounded-pill px-4 shadow-sm">
+          🔄 Reset Password
+        </a>
+        <a href="{% url 'kitchen:cook-delete' cook.pk %}" class="btn btn-outline-danger rounded-pill px-4 shadow-sm">
+          Delete profile
+        </a>
+				{% endif %}
+      </div>
+    </div>
+
+    <!-- Cook information -->
+    <div class="cook-info mb-4">
+      <h5 class="fw-semibold mb-3 text-secondary">👨‍🍳 Cook Information</h5>
+      <ul class="list-unstyled mb-0">
+        <li><strong>Years of Experience:</strong> {{ cook.years_of_experience }}</li>
+        <li><strong>Email:</strong> {{ cook.email }}</li>
+        <li><strong>Joined:</strong> {{ cook.date_joined|date:"F j, Y" }}</li>
+      </ul>
+    </div>
+
+    <!-- Cook’s dishes -->
+    <div>
+      <h5 class="fw-semibold mb-3 text-secondary">🍲 Dishes Cooked</h5>
+      {% if cook.dishes.all %}
+        <div class="dish-list">
+          {% for dish in cook.dishes.all %}
+          <div class="dish-item p-3 mb-2 rounded shadow-sm">
+            <h6 class="mb-1 fw-bold text-dark">
+              <a href="{% url 'kitchen:dish-detail' dish.pk %}" class="text-decoration-none text-primary">
+                {{ dish.name }}
+              </a>
+            </h6>
+            <p class="text-muted small mb-0">{{ dish.dish_type.name }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted">This cook hasn’t been assigned to any dishes yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- Back button -->
+    <div class="text-center mt-5">
+      <a href="{% url 'kitchen:cook-list' %}" class="btn btn-outline-secondary rounded-pill px-5 py-2 shadow-sm">
+        ← All Cooks
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
