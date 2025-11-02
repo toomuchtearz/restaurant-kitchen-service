@@ -20,5 +20,5 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 @admin.register(Cook)
-class IngredientAdmin(UserAdmin):
+class CookAdmin(UserAdmin):
     pass
