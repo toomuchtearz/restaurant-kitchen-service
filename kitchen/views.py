@@ -200,8 +200,9 @@ class IngredientUpdateView(
 
 class IngredientDeleteView(
     LoginRequiredMixin,
+    UserPassesTestMixin,
     generic.DeleteView,
-    UserPassesTestMixin
+
 ):
 
     def test_func(self):
@@ -436,7 +437,7 @@ class SuggestionListView(LoginRequiredMixin, generic.ListView):
         if not self.request.user.is_staff:
             queryset = queryset.filter(
                 cook=self.request.user
-        )
+            )
 
         dish_name = self.request.GET.get("dish_name")
         if dish_name:
@@ -446,7 +447,6 @@ class SuggestionListView(LoginRequiredMixin, generic.ListView):
             )
 
         return queryset
-
 
     def get_context_data(
         self, *, object_list=..., **kwargs
@@ -476,4 +476,3 @@ def suggestion_approve_view(request: HttpRequest, pk: int) -> HttpResponse:
             kwargs={"pk": suggestion.pk}
         )
     )
-

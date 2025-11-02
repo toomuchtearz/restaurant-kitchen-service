@@ -112,10 +112,22 @@ urlpatterns = [
         CookDeleteView.as_view(),
         name="cook-delete"
     ),
-    path("dishes/<int:dish_id>/suggest/", SuggestionCreateView.as_view(), name="suggestion-create"),
+    path(
+        "dishes/<int:dish_id>/suggest/",
+        SuggestionCreateView.as_view(),
+        name="suggestion-create"
+    ),
     path("suggestions/", SuggestionListView.as_view(), name="suggestion-list"),
-    path("suggestions/<int:pk>/", SuggestionDetailView.as_view(), name="suggestion-detail"),
-    path("suggestions/<int:pk>/approve/", suggestion_approve_view, name="suggestion-approve"),
+    path(
+        "suggestions/<int:pk>/",
+        SuggestionDetailView.as_view(),
+        name="suggestion-detail"
+    ),
+    path(
+        "suggestions/<int:pk>/approve/",
+        suggestion_approve_view,
+        name="suggestion-approve"
+    ),
 
 ]
 
