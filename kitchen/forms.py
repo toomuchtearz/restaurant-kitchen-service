@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from django.forms import CheckboxSelectMultiple
 
-from kitchen.models import Suggestion
+from kitchen.models import Suggestion, Dish, Ingredient
 
 
 class CookCreationForm(UserCreationForm):
@@ -40,6 +41,23 @@ class SuggestionForm(forms.ModelForm):
         model = Suggestion
         fields = ("text",)
 
+
+class DishForm(forms.ModelForm):
+    ingredients = forms.ModelMultipleChoiceField(
+        queryset=Ingredient.objects.all(),
+        widget=forms.SelectMultiple(attrs={"id": "id_ingredients"}),
+        required=False,
+    )
+
+    cooks = forms.ModelMultipleChoiceField(
+        queryset=get_user_model().objects.all(),
+        widget=forms.SelectMultiple(attrs={"id": "id_cooks"}),
+        required=False,
+    )
+
+    class Meta:
+        model = Dish
+        fields = "__all__"
 
 class CookSearchForm(forms.Form):
     username = forms.CharField(

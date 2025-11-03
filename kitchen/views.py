@@ -15,7 +15,7 @@ from kitchen.forms import (
     CookSearchForm,
     CookPasswordResetForm,
     SuggestionForm,
-    SuggestionSearchForm,
+    SuggestionSearchForm, DishForm,
 )
 from kitchen.models import (
     Dish,
@@ -105,7 +105,7 @@ class DishCreateView(
     generic.CreateView
 ):
     model = Dish
-    fields = "__all__"
+    form_class = DishForm
     success_url = reverse_lazy("kitchen:dish-list")
 
     def test_func(self):
@@ -118,7 +118,7 @@ class DishUpdateView(
     generic.UpdateView
 ):
     model = Dish
-    fields = "__all__"
+    form_class = DishForm
 
     def test_func(self):
         return self.request.user.is_staff
