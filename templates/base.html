@@ -29,6 +29,38 @@
 
   {% endif %}
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Choices.js CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+
+<!-- Bootstrap JS (already included) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Choices.js JS -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initialize Choices on both multi-select fields
+    const selects = ['#id_ingredients', '#id_cooks'];
+    selects.forEach(selector => {
+      const el = document.querySelector(selector);
+      if (el) {
+        new Choices(el, {
+          removeItemButton: true,
+          placeholderValue: selector === '#id_ingredients'
+            ? 'Select ingredients...'
+            : 'Select cooks...',
+          searchEnabled: true,
+          searchPlaceholderValue: 'Type to search...',
+          searchResultLimit: 15,
+          shouldSort: false,
+          noResultsText: 'No results found',
+        });
+      }
+    });
+  });
+</script>
+
+
 </body>
 </html>

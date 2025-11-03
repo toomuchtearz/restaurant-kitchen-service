@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from django.forms import CheckboxSelectMultiple
 
 from kitchen.models import Suggestion, Dish, Ingredient
 
@@ -58,6 +57,7 @@ class DishForm(forms.ModelForm):
     class Meta:
         model = Dish
         fields = "__all__"
+
 
 class CookSearchForm(forms.Form):
     username = forms.CharField(
