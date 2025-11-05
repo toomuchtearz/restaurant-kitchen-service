@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container mx-auto">
+  <div class="card shadow-sm border-0 p-4 form-card text-center">
+
+    <h2 class="fw-bold mb-4 text-danger">
+      ⚠️ Confirm Deletion
+    </h2>
+
+    <p class="text-muted mb-4">
+      {% if object == request.user %}
+				Are you sure you want to delete your account?
+			{% else %}
+				Are you sure you want to delete <strong>{{ cook.get_full_name|default:cook.username }}</strong>?
+			{% endif %}
+      <br>
+      This action cannot be undone.
+    </p>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="{% url 'kitchen:cook-detail' object.pk %}" class="btn btn-outline-secondary rounded-pill px-4">
+          ⬅ Back to Account
+        </a>
+        <button type="submit" class="btn btn-danger rounded-pill shadow-sm px-4">
+          🗑️ Delete
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

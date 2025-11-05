@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Logged Out | Kitchen Service{% endblock %}
+
+{% block public_content %}
+<div class="logout-container d-flex flex-column justify-content-center align-items-center text-center" style="min-height: 90vh;">
+    <div class="card shadow-lg border-0 p-5 rounded-4" style="max-width: 480px;">
+        <h1 class="fw-bold mb-3 text-primary">👋 You’ve Logged Out</h1>
+        <p class="text-muted mb-4">
+            You’ve been successfully signed out of your account.  
+            We hope to see you back soon at <strong>Our Kitchen Service</strong>!
+        </p>
+        <a href="{% url 'login' %}" class="btn btn-primary shadow-sm rounded-pill px-4 py-2">
+            🔑 Log In Again
+        </a>
+    </div>
+</div>
+{% endblock %}

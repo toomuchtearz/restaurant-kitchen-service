@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+<div class="form-container mx-auto">
+  <div class="card shadow-sm border-0 p-4 form-card">
+
+    <h2 class="fw-bold mb-4 text-center">
+      {% if object %}
+        ✏️ Edit Dish Type
+      {% else %}
+        🍴 Add New Dish Type
+      {% endif %}
+    </h2>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form|crispy }}
+
+      <div class="d-flex justify-content-between mt-4">
+			{% if object %}
+				<a href="{% url 'kitchen:dish-type-detail' dishtype.pk %}" class="btn btn-outline-secondary rounded-pill px-4">
+          ⬅ Back
+        </a>
+			{% else %}
+				<a href="{% url 'kitchen:dish-type-list' %}" class="btn btn-outline-secondary rounded-pill px-4">
+          ⬅ Back
+        </a>
+			{% endif %}
+
+        <button type="submit" class="btn btn-primary rounded-pill shadow-sm px-4">
+          {% if object %}Update Dish Type{% else %}Create Dish Type{% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

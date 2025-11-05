@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Home | Kitchen Service{% endblock %}
+
+{% block content %}
+<div class="index-container">
+    <div class="welcome-section card shadow-sm p-5 mb-4 text-center">
+        <h1 class="display-5 fw-bold mb-3">Welcome to <span class="brand-name">Restaurant Kitchen Service</span> 🍽️</h1>
+        <p class="lead text-muted mb-4">
+            Manage dishes, ingredients, and your team of cooks with style and efficiency.
+        </p>
+        <a href="{% url 'kitchen:dish-list' %}" class="btn btn-primary btn-lg shadow-sm">Explore Dishes</a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card card text-center shadow-sm">
+            <div class="card-body">
+                <h3 class="stat-value">{{ num_visits }}</h3>
+                <p class="stat-label text-muted">Your site visits this session</p>
+            </div>
+        </div>
+        <div class="stat-card card text-center shadow-sm">
+            <div class="card-body">
+                <h3 class="stat-value">{{ num_dishes }}</h3>
+                <p class="stat-label text-muted">Total Dishes</p>
+            </div>
+        </div>
+        <div class="stat-card card text-center shadow-sm">
+            <div class="card-body">
+                <h3 class="stat-value">{{ num_ingredients }}</h3>
+                <p class="stat-label text-muted">Available Ingredients</p>
+            </div>
+        </div>
+        <div class="stat-card card text-center shadow-sm">
+            <div class="card-body">
+                <h3 class="stat-value">{{ num_cooks }}</h3>
+                <p class="stat-label text-muted">Registered Cooks</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

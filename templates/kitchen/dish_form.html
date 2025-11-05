@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+
+{% block content %}
+<div class="form-container mx-auto">
+  <div class="card shadow-sm border-0 p-4 form-card">
+
+    <h2 class="fw-bold mb-4 text-center text-primary">
+      {% if object %}
+        ✏️ Edit Dish
+      {% else %}
+        🍽️ Add New Dish
+      {% endif %}
+    </h2>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+      {{ form|crispy }}
+
+      <div class="d-flex justify-content-between mt-4">
+			{% if object %}
+        <a href="{% url 'kitchen:dish-detail' object.pk %}" class="btn btn-outline-secondary rounded-pill px-4">
+          ⬅ Dish
+        </a>
+			{% else %}
+				<a href="{% url 'kitchen:dish-list' %}" class="btn btn-outline-secondary rounded-pill px-4">
+          ⬅ All dishes
+        </a>
+			{% endif %}
+        <button type="submit" class="btn btn-primary rounded-pill shadow-sm px-4">
+          {% if form.instance.pk %}💾 Update Dish{% else %}✨ Create Dish{% endif %}
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

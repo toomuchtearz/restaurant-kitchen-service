@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ dish_type.name }} | Kitchen Service{% endblock %}
+
+{% block content %}
+<div class="dish-type-detail-container">
+  <div class="card shadow-sm border-0 p-4 mb-4" style="border-radius: 20px;">
+    <h1 class="fw-bold mb-3 text-primary">
+      🍴 {{ dish_type.name }}
+    </h1>
+    <p class="text-muted mb-0">Explore dishes under this category.</p>
+  </div>
+
+  <div class="card shadow-sm border-0 p-4" style="border-radius: 20px;">
+    <h4 class="fw-semibold mb-3 text-secondary">Dishes in this type:</h4>
+
+    {% if dish_type.dishes.all %}
+      <div class="row">
+        {% for dish in dish_type.dishes.all %}
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card dish-type-dish-card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <h5 class="card-title mb-2">
+                  <a href="{% url 'kitchen:dish-detail' pk=dish.id %}" class="dish-title-link">
+                    {{ dish.name }}
+                  </a>
+                </h5>
+                <p class="card-text text-muted small">{{ dish.description|truncatewords:15 }}</p>
+                <p class="price-tag mb-0">💰 {{ dish.price }} USD</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-muted">No dishes are currently registered under this type.</p>
+    {% endif %}
+  </div>
+
+  <div class="d-flex justify-content-between mt-4">
+    <a href="{% url 'kitchen:dish-type-list' %}" class="btn btn-outline-secondary rounded-pill px-4">
+      ⬅ Back to List
+    </a>
+    <div>
+      {% if request.user.is_staff %}
+				<a href="{% url 'kitchen:dish-type-update' pk=dish_type.id %}" class="btn btn-outline-primary rounded-pill px-4 me-2">
+        ✏️ Rename
+      </a>
+      <a href="{% url 'kitchen:dish-type-delete' pk=dish_type.id %}" class="btn btn-outline-danger rounded-pill px-4">
+        🗑 Delete
+      </a>
+			{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
