@@ -8,6 +8,8 @@ django-appconf==1.1.0
 django-crispy-forms==2.4
 django-select2==8.4.3
 flake8==7.3.0
+gunicorn==23.0.0
+h11==0.16.0
 mccabe==0.7.0
 mypy_extensions==1.1.0
 packaging==25.0
@@ -20,4 +22,5 @@ python-dotenv==1.2.1
 pytokens==0.2.0
 sqlparse==0.5.3
 tzdata==2025.2
+uvicorn==0.38.0
 whitenoise==6.11.0
